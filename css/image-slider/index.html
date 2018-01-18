@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Image Slider</title>
+	<style type="text/css">
+		.image-slider {
+			position: relative;
+			display: inline-block;
+		}
+		.image-slider > div {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 50%;
+			max-width: 100%;
+			overflow: hidden;
+			resize: horizontal;
+			z-index: 1;
+		}
+		.image-slider > img {
+			filter: sepia();
+		}
+	</style>
+</head>
+<body>
+	<div class="image-slider">
+		<div>
+			<img src="https://www.google.ru/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="google">
+		</div>
+		<img src="https://www.google.ru/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="google">
+	</div>
+</body>
+</html>
