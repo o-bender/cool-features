@@ -1,0 +1,88 @@
+Сокращения
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+
+
+Отправка изменений на сервер
+git push origin 69_hosted_library
+
+
+Отменить коммит
+git reset --hard ORIG_HEAD
+
+
+Получение изменений с сервера для ветки
+git pull origin 69_hosted_library
+
+
+Получение с сервера новой ветки которой нет в локальном хранилище
+git checkout -b 87_number_of_rows_on_admin origin/87_number_of_rows_on_admin
+
+
+Удаление из индекса
+git rm --cached readme.txt
+
+
+Обновление ветки до мастера
+git checkout some_branch
+git merge origin/master
+
+Или
+git checkout some_branch
+git fetch
+git rebase origin/master
+
+
+Rename branch
+
+git br -m old_name new_name
+
+
+certbot certificates
+# test renew
+certbot renew --dry-run --pre-hook "service nginx stop" --post-hook "service nginx start"
+# renew
+certbot renew --pre-hook "service nginx stop" --post-hook "service nginx start"
+
+Удалить из кеша
+git rm -r --cached raduga/js/order-element.min.js
+
+
+Как откатить мастер к коммиту из лога
+git log
+...
+commit 2ab173e7dd6c7a3c5a78108fd48e66803085aadb
+Author: Pavel Lukin <paullykin@gmail.com>
+Date:   Wed Sep 27 14:08:53 2017 +0300
+
+    5
+
+commit caf2eabc23935ac89917448442e16138d9d80629
+Author: Pavel Lukin <paullykin@gmail.com>
+Date:   Wed Sep 27 14:03:37 2017 +0300
+
+    2
+
+commit f8cac4584e7c7eb257f43c8fa531cbc989c4883f
+Author: Pavel Lukin <paullykin@gmail.com>
+Date:   Wed Sep 27 14:03:28 2017 +0300
+
+    1
+...
+git rebase --onto f8cac4584e7c7eb257f43c8fa531cbc989c4883f master
+
+
+Как откатить мастер к коммиту из лога в новую ветку. Изменить её. И заменить ей master.
+git log
+...
+git co -b stable caf2eabc23935ac89917448442e16138d9d80629
+git co master
+git rebase --onto stable master
+
+
+
+behave -n 'This is a scenario name'
+behave -i file_name.feature
+behave -e file_name.feature
