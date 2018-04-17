@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # requirements
-# tesseract-ocr tesseract-ocr-rus imagemagick libreoffice-writer
+# tesseract-ocr tesseract-ocr-rus imagemagick libreoffice-writer openjdk-8-jre
 
 file_name="${1}"
 txt_file_name=`echo "${file_name}" | sed -e 's/\..*$//g'`
