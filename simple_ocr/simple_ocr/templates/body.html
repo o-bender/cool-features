@@ -1,0 +1,175 @@
+{% set title = 'Simple OCR' %}
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="robots" content="noindex"/>
+		<title>{{ title | safe }}</title>
+		<meta name="title" content="{{ title | safe }}"/>
+		<meta name="description" content="{{ description }}"/>
+
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache,must-revalidate">
+		<meta http-equiv="expires" content="0">
+		<meta http-equiv="imagetoolbar" content="no">
+
+		<!-- Facebook / Open Graph -->
+<!-- 		<meta property="fb:app_id" content="{{ OG_app_id }}"> -->
+		<meta property="og:url" content="">
+		<meta property="og:type" content="{{ ogtype or 'website' }}">
+		<meta property="og:title" content="{{ title }}">
+		<meta property="og:image" content="{{ ogimage }}">
+		<meta property="og:description" content="{{ description }}">
+		<meta property="og:site_name" content='Simple OCR' />
+		<meta property="og:locale" content="ru_RU">
+		<!-- <meta property="article:author" content="{{ author }}"> -->
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary"/>
+		<meta name="twitter:site" content=""/>
+		<meta name="twitter:title" content="{{ title }}">
+		<meta name="twitter:description" content="{{ description }}"/>
+		<meta name="twitter:creator" content=""/>
+		<meta name="twitter:image" content="https://www.russian-kurort.ru/static/images/tesseract_150x150.png"/>
+		<meta name="format-detection" content="telephone=no">
+		<!-- Add to Home Screen -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-title" content="App Title">
+		<!-- Touch Icons -->
+		<link rel="apple-touch-icon" href="https://www.russian-kurort.ru/static/images/tesseract_150x150.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="https://www.russian-kurort.ru/static/images/tesseract_150x150.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="https://www.russian-kurort.ru/static/images/tesseract_150x150.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="https://www.russian-kurort.ru/static/images/tesseract_150x150.png">
+		<!-- In most cases, one 180×180px touch icon in the head is enough -->
+		<!-- If you use art-direction and/or want to have different content for each device, you can add more touch icons -->
+		<!-- Startup Image -->
+		<link rel="apple-touch-startup-image" href="https://www.russian-kurort.ru/static/images/tesseract_150x150.png">
+		<!-- <link rel="mask-icon" sizes="any" href="/static/images/favicon.svg" color="#white" /> -->
+		<!-- Android -->
+		<meta name="theme-color" content="#003580">
+		<meta name="mobile-web-app-capable" content="yes">
+		<!-- Google Chrome -->
+		<!--<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/APP_ID">-->
+		<!-- Disable translation prompt -->
+		<meta name="google" value="notranslate">
+		<!-- MS -->
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta http-equiv="cleartype" content="on">
+		<meta name="skype_toolbar" content="skype_toolbar_parser_compatible">
+		<!-- Pinned Site -->
+		<!-- IE 10 / Windows 8 -->
+		<meta name="msapplication-TileImage" content="https://www.russian-kurort.ru/static/images/tesseract_150x150.png">
+		<meta name="msapplication-TileColor" content="#003580">
+		<!-- IE 11 / Windows 9.1 -->
+		<meta name="msapplication-config" content="/ms-browserconfig.xml">
+
+		<link rel="shortcut icon" href="/static/images/tesseract_150x150.png" sizes="16x16" type="image/png"/>
+		<link rel="shortcut icon" href="/static/images/tesseract_150x150.png" sizes="32x32" type="image/png"/>
+		<link rel="shortcut icon" href="/static/images/tesseract_150x150.png" sizes="48x48" type="image/png"/>
+		<link rel="shortcut icon" href="/static/images/tesseract_150x150.png" sizes="62x62" type="image/png"/>
+		<link rel="shortcut icon" href="/static/images/tesseract_150x150.png" type="image/png"/>
+		<link rel="shortcut icon" type="image/svg+xml" href="/static/images/favicon.svg">
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="/static/css/input-file.css">
+		<script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<header class="navbar navbar-expand navbar-dark bg-dark">
+  			<a class="navbar-brand" href="#">
+  				<img src="/static/images/tesseract_150x150.png" style="width: 35px;">
+  				Simple OCR
+  			</a>
+  		</header>
+
+  		<div class="container">
+  			<div class="row justify-content-center">
+				<div class="col-md-4 m-5">
+					<form method="POST" enctype="multipart/form-data">
+						<div class="form-group">
+							<label>Доступные форматы: jpg, jpeg, png, tif, tiff, pdf</label>
+							<div class="btn btn-primary input-file" style="display: block;">
+								Загрузить файл
+								<input type="file" name="file">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row justify-content-center js-wait-block" style="display: none;">
+				<div class="col-md-4">
+					<i class="fa fa-cog fa-spin fa-3x"></i>
+					<span class="h3" style="vertical-align: super;">Идёт распознование</span>
+				</div>
+			</div>
+			<div class="row justify-content-center js-file-links-block" style="display: none;">
+			</div>
+			<div class="row justify-content-center js-alert-block" style="display: none;">
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			function createFileLink(data) {
+				return $('\
+				<div class="col-md-4">\
+					<div class="alert">\
+						<a href="' + data.link + '">' + data.filename + '</a>\
+					</div>\
+				</div>\
+				')
+			}
+
+			function createErrorMessage(message) {
+				return $('\
+				<div class="col-md-4 m-5">\
+					<div class="alert alert-danger">\
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+							<span aria-hidden="true">&times;</span>\
+						</button>\
+						' + message + '\
+					</div>\
+				</div>\
+				')
+			}
+
+			function ajax_submit_form(event) {
+				event.preventDefault();
+				var wait_block = $('.js-wait-block').fadeIn();
+
+				var $input = $('[name="file"]', this);
+    			var fd = new FormData;
+    			fd.append('file', $input.prop('files')[0]);
+
+				$.ajax({
+					url: this.action || window.location.pathname,
+					method: this.method || 'POST',
+					data: fd,
+					processData: false,
+        			contentType: false,
+        			success: function(response_data) {
+        				$('.js-file-links-block').html(createFileLink(response_data)).fadeIn();
+        			},
+        			error: function(response) {
+        				console.log(response);
+        				var message = response.status != 0 ? response.responseText : "Нет связи с сервером.";
+        				$('.js-alert-block').html(createErrorMessage(message)).fadeIn();
+        			}
+				}).always(function() {
+					wait_block.fadeOut();
+    			});
+			}
+
+			window.addEventListener('load', function() {
+				$('form').submit(ajax_submit_form);
+				$('[name="file"]').change(function() {
+					$('form').submit();
+				});
+			})
+		</script>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	</body>
+</html>
