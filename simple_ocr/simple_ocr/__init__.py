@@ -1,10 +1,12 @@
-from flask import Flask, render_template, flash, request, send_file, url_for
+from flask import Flask, render_template, flash, request, send_file, url_for, make_response
 from subprocess import Popen
 from subprocess import PIPE
-from os import remove, mkdir, path
+from os import remove, mkdir, path, listdir
 from time import sleep
 from io import BytesIO
 from simple_ocr.config_production import Config as ConfigProduction
+from simple_ocr.log_config import set_up_logging
+
 from setproctitle import setproctitle
 from os import fork, setuid, setgid, path, listdir, environ
 from tempfile import mktemp
@@ -13,9 +15,45 @@ import shutil
 from urllib.parse import quote
 from itsdangerous import URLSafeSerializer
 import json
+from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
+
+
+@app.cli.command()
+def clean_old_files():
+    '''Remove old (app.config['THRESHOLD_LIFETIME'] days) files'''
+    threshold_lifetime = datetime.now() - timedelta(days=app.config['THRESHOLD_LIFETIME'])
+    for ocr_project in listdir(app.config['UPLOAD_FOLDER']):
+        ocr_project_path = path.join(app.config['UPLOAD_FOLDER'], ocr_project)
+        if datetime.fromtimestamp(path.getmtime(ocr_project_path)) < threshold_lifetime:
+            shutil.rmtree(ocr_project_path)
+
+
+@app.cli.command()
+def deploy_cron_schedules():
+    '''Deplow cron schedulers'''
+    import os
+    os.system('/usr/bin/find cron/ -maxdepth 2 -name *.cron | /usr/bin/xargs cat | /usr/bin/crontab')
+
+
+@app.cli.command()
+def tornado_run():
+    '''Run with Tornado framework. Run as service.'''
+    from tornado.wsgi import WSGIContainer
+    from tornado.httpserver import HTTPServer
+    from tornado.ioloop import IOLoop
+    init_app(app)
+    pid = fork()
+    if not pid:
+        if not app.debug:
+            import sys
+            sys.stdout = open('/dev/null', 'w')
+            sys.stderr = open('/dev/null', 'w')
+        http_server = HTTPServer(WSGIContainer(app))
+        http_server.listen(app.config['TCP_PORT'])
+        IOLoop.instance().start()
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -46,7 +84,8 @@ def setProcParams(app):
 
 def init_app(app):
     app.config.from_object(ConfigProduction)
-    # setProcParams(app)
+    set_up_logging(app)
+    setProcParams(app)
     return app
 
 
@@ -121,9 +160,14 @@ def get_file(token):
         bytes_data = fp.read()
     stream = BytesIO(bytes_data)
 
-    # shutil.rmtree(path.dirname(data['file']))
-    
-    return send_file(
+    file_reponse = send_file(
         stream,
         attachment_filename=quote(data['filename'].encode('utf-8')),
         as_attachment=True)
+    response = make_response(file_reponse)
+    response.headers["Content-Disposition"] = \
+        "attachment;" \
+        "filename*=UTF-8''{utf_filename}".format(
+            utf_filename=quote(data['filename'].encode('utf-8'))
+        )
+    return response

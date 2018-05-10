@@ -1,0 +1,1 @@
+0 */1 * * * export PATH=/bin:/sbin:/usr/bin:/usr/sbin; export FLASK_DEBUG=1; export FLASK_APP=app.py; cd /var/www/simple_ocr; python3 -m flask clean_old_files

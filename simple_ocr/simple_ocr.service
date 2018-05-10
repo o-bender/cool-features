@@ -1,0 +1,28 @@
+# cp simple_ocr.service /etc/systemd/system/
+# systemctl status simple_ocr
+# systemctl enable simple_ocr
+# systemctl start  simple_ocr
+
+[Unit]
+Description=SimpleOcr
+After=syslog.target
+After=network.target
+After=nginx.service
+After=mysql.service
+
+[Service]
+Type=forking
+WorkingDirectory=/var/www/simple_ocr
+
+User=user
+Group=user
+
+Environment=FLASK_DEBUG=0
+
+OOMScoreAdjust=-100
+
+ExecStart=/bin/sh /var/www/simple_ocr/runserver.sh
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target

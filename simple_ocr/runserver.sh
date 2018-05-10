@@ -1,0 +1,1 @@
+export FLASK_DEBUG=1; export FLASK_APP=app.py; python3 -m flask tornado_run
