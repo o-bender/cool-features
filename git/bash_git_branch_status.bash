@@ -30,6 +30,14 @@ function __git_branch {
   fi
 }
 
+function __git_shash() {
+  local cnt_stashes=`git stash list | wc -l` &> /dev/null;
+  if [[ $cnt_stashes > 0 ]]
+  then
+    echo "(stashes ${cnt_stashes})"
+  fi
+}
+
 function __get_color {
   __is_gitdir
   if [ $? == 0 ]
@@ -48,7 +56,7 @@ function bash_prompt {
   local USER_COLOR=$GREEN
   [ $UID -eq "0" ] && USER_COLOR=$RED
 
-  PS1="\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}${USER_COLOR}\u@\h${WHITE}:${BLUE}\w\[\033[0;\$(__get_color)m\]\$(__git_branch)${NONE}$ "
+  PS1="\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}${USER_COLOR}\u@\h${WHITE}:${BLUE}\w\[\033[0;\$(__get_color)m\]\$(__git_branch)\$(__git_shash)${NONE}$ "
 }
 
 bash_prompt
