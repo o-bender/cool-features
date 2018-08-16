@@ -31,10 +31,14 @@ function __git_branch {
 }
 
 function __git_shash() {
-  local cnt_stashes=`git stash list | wc -l` &> /dev/null;
-  if [[ $cnt_stashes > 0 ]]
+  __is_gitdir
+  if [ $? == 0 ]
   then
-    echo "(stashes ${cnt_stashes})"
+    local cnt_stashes=`git stash list | wc -l` &> /dev/null;
+    if [[ $cnt_stashes > 0 ]]
+    then
+      echo "(stashes ${cnt_stashes})"
+    fi
   fi
 }
 
